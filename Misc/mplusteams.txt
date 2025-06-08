@@ -1,0 +1,33 @@
+DATA: 
+  file is 'c:\mplus\teams.txt'; 
+VARIABLE: 
+  names are dysfunc negtone negexp perform division d1 d2 d3; 
+  usevariables are dysfunc negexp negtone perform d1 d2 d3 toneexp;
+DEFINE:
+  toneexp = negtone*negexp;
+ANALYSIS: 
+  !bootstrap=10000;
+MODEL:
+  perform ON d1 d2 d3 
+             dysfunc (cp)
+             negtone (b1)
+             negexp (b2)
+             toneexp (b3);
+  negtone ON d1 d2 d3 
+             dysfunc (a1); 
+  d1;
+  d2;
+  d3;
+  negexp;
+  dysfunc;
+  toneexp;
+  negtone with negexp;
+  negtone with toneexp;
+MODEL CONSTRAINT:
+  new (a1thetaL a1thetaM a1thetaH a1b3);
+  a1thetaL=a1*(b1+b3*(-0.552));
+  a1thetaM=a1*(b1+b3*(-0.008));
+  a1thetaH=a1*(b1+b3*(+0.535));
+  a1b3=a1*b3;
+OUTPUT: 
+  !cinterval(bcbootstrap);
